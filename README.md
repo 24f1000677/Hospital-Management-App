@@ -197,6 +197,7 @@ This follows the **OpenAPI 3.0** specification and includes definitions for:
 ---
 
 ## Installation & Setup
+```bash
 
 ### 1. Clone the repository
 bash
@@ -214,7 +215,7 @@ pip install -r requirements.txt
 ### 4. Run the application
 python run.py
 
-
+```
 ## Your app will be available at:
 
 http://127.0.0.1:5000
