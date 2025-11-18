@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <h3 class="mb-4">New Patient Registration</h3>
+
+    {% if errors %}
+      <div class="alert alert-danger">
+        <ul class="mb-0">
+          {% for e in errors %}
+            <li>{{ e }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+
+    <form method="post" novalidate>
+      <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input id="username"
+               name="username"
+               class="form-control"
+               required
+               value="{{ form.username if form else '' }}">
+      </div>
+
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input id="email"
+               name="email"
+               type="email"
+               class="form-control"
+               required
+               value="{{ form.email if form else '' }}">
+      </div>
+
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input id="password"
+               name="password"
+               type="password"
+               class="form-control"
+               required>
+      </div>
+
+      <!-- Force all registrations to be patients to match the wireframe -->
+      <input type="hidden" name="role" value="patient">
+
+      <button class="btn btn-success w-100">Register</button>
+    </form>
+
+  </div>
+</div>
+{% endblock %}

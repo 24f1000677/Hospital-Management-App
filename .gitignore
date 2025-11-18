@@ -1,0 +1,27 @@
+# Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+
+# Environment / secrets
+.env
+*.env
+
+# Databases and runtime data
+instance/
+*.db
+*.sqlite3
+
+# Flask / logs
+*.log
+
+# OS-specific
+.DS_Store
+
+# Editors / IDE
+.vscode/
+.idea/

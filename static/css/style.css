@@ -1,0 +1,214 @@
+/* add styles here */
+/* ============================================
+   GENERAL THEME
+   ============================================ */
+
+   body {
+    background-color: #f4f9ff; /* soft hospital blue */
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: #333;
+}
+
+h1, h2, h3, h4, h5 {
+    color: #003b73; /* deep medical blue */
+    font-weight: 600;
+}
+
+/* ============================================
+   NAVBAR
+   ============================================ */
+
+.navbar {
+    background-color: #eaf3ff !important;
+    border-bottom: 1px solid #d5e6ff;
+}
+
+.navbar-brand {
+    color: #003b73 !important;
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+
+.navbar a.btn {
+    margin-left: 8px;
+}
+
+/* ============================================
+   CARDS + CONTAINERS
+   ============================================ */
+
+.card {
+    border-radius: 10px;
+    border: 1px solid #d5e6ff;
+    box-shadow: 0 3px 10px rgba(0, 59, 115, 0.06);
+}
+
+.card-header {
+    background-color: #e8f1ff;
+    border-bottom: 1px solid #cddfff;
+    font-weight: 600;
+}
+
+.container {
+    padding-bottom: 40px;
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+
+.btn-primary {
+    background-color: #0077cc;
+    border-color: #0077cc;
+}
+
+.btn-primary:hover {
+    background-color: #005fa3;
+    border-color: #005fa3;
+}
+
+.btn-outline-primary {
+    color: #0077cc;
+    border-color: #0077cc;
+}
+
+.btn-outline-primary:hover {
+    background-color: #0077cc;
+    color: white;
+}
+
+/* Success button (green) */
+.btn-success {
+    background-color: #25a65a;
+    border-color: #25a65a;
+}
+.btn-success:hover {
+    background-color: #1d8340;
+    border-color: #1d8340;
+}
+
+/* ============================================
+   FORMS
+   ============================================ */
+
+form label {
+    font-weight: 500;
+}
+
+form input, form select, form textarea {
+    border-radius: 6px !important;
+    border: 1px solid #bcd6f7;
+}
+
+form input:focus, form select:focus {
+    border-color: #0077cc !important;
+    box-shadow: 0 0 0 3px rgba(0, 119, 204, 0.25);
+}
+
+/* ============================================
+   LIST GROUP
+   ============================================ */
+
+.list-group-item {
+    border: 1px solid #d8e7ff;
+    border-radius: 6px !important;
+    margin-bottom: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.list-group-item:hover {
+    background-color: #eaf3ff;
+}
+
+/* ============================================
+   TABLES
+   ============================================ */
+
+table {
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+table th {
+    background-color: #eaf3ff;
+    color: #003b73;
+    font-weight: 600;
+}
+
+/* ============================================
+   ALERTS
+   ============================================ */
+
+.alert-info {
+    background-color: #e1f0ff;
+    color: #004b8d;
+    border-color: #bcd6f7;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+
+footer small {
+    color: #5c7fa6;
+}
+
+/* ============================================
+   DASHBOARD PANELS
+   ============================================ */
+
+.dashboard-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: #003b73;
+}
+
+.dashboard-section {
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #d5e6ff;
+    box-shadow: 0 5px 12px rgba(0, 59, 115, 0.07);
+    margin-bottom: 20px;
+}
+
+/* ============================================
+   HOVER EFFECTS
+   ============================================ */
+
+.hover-card {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.hover-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 59, 115, 0.12);
+}
+
+/* ============================================
+   LINKS
+   ============================================ */
+
+a {
+    color: #005fb8;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* ============================================
+   MOBILE FRIENDLY
+   ============================================ */
+
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1.1rem;
+    }
+    h3 {
+        font-size: 1.2rem;
+    }
+}

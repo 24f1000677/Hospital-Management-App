@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <h3>Reschedule Appointment #{{ appt.id }}</h3>
+
+    {% if get_flashed_messages() %}
+      <div class="alert alert-info">
+        {% for m in get_flashed_messages() %}<div>{{ m }}</div>{% endfor %}
+      </div>
+    {% endif %}
+
+    {% if errors %}
+      <div class="alert alert-danger">
+        <ul class="mb-0">
+          {% for e in errors %}<li>{{ e }}</li>{% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+
+    <!-- Step 1: choose doctor (or use currently assigned doctor) -->
+    <form id="choose-doctor-form" method="get" class="row g-3 mb-3">
+      <div class="col-md-6">
+        <label class="form-label">Department</label>
+        <select id="department-select" class="form-select" onchange="filterDoctors()">
+          <option value="">-- choose department --</option>
+          {% for d in departments %}
+            <option value="{{ d.id }}" {% if appt.department_id==d.id %}selected{% endif %}>{{ d.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Doctor</label>
+        <select id="doctor-select" name="doctor_id" class="form-select">
+          <option value="">-- choose doctor --</option>
+          {% for doc in doctors %}
+            <option value="{{ doc.id }}" data-dept="{{ doc.department_id }}" {% if selected_doc_id and selected_doc_id == doc.id %}selected{% elif not selected_doc_id and appt.doctor_id==doc.id %}selected{% endif %}>
+              {{ doc.user.username if doc.user else 'Doctor ' ~ doc.id }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="col-12">
+        <button type="submit" class="btn btn-outline-primary">Show available slots</button>
+        <a class="btn btn-secondary" href="{{ url_for('patient.dashboard') }}">Cancel</a>
+      </div>
+    </form>
+
+    <!-- Step 2: show slots (if any) and let user pick one -->
+    {% if slots %}
+      <form method="post">
+        <div class="mb-3">
+          <label class="form-label">Choose an available slot for {{ (doctors|selectattr('id','equalto', selected_doc_id)|first).user.username if selected_doc_id else '' }}</label>
+          <ul class="list-group">
+            {% for s in slots %}
+              <li class="list-group-item">
+                <label class="w-100">
+                  <input type="radio" name="availability_id" value="{{ s.id }}" required>
+                  <strong>{{ s.date }} {{ s.start_time }} - {{ s.end_time }}</strong>
+                  <div class="small text-muted">Doctor: {{ s.doctor.user.username if s.doctor and s.doctor.user else '—' }}</div>
+                </label>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <button class="btn btn-success">Reschedule to selected slot</button>
+      </form>
+    {% else %}
+      <div class="alert alert-secondary">
+        {% if selected_doc_id %}
+          No available slots for the selected doctor. Try another doctor or add availability.
+        {% else %}
+          Select a doctor and click "Show available slots" to view free slots.
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+function filterDoctors(){
+  // show/hide doctors in doctor-select based on department selected
+  const dept = document.getElementById('department-select').value;
+  const options = document.querySelectorAll('#doctor-select option');
+  options.forEach(opt=>{
+    const d = opt.getAttribute('data-dept');
+    if(!dept || d === dept){
+      opt.style.display = '';
+    } else {
+      opt.style.display = 'none';
+    }
+  });
+}
+</script>
+{% endblock %}

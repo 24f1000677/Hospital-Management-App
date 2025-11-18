@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{# read search query from URL ?q=... #}
+{% set q = request.args.get('q', '') %}
+{% set q_lower = q|lower %}
+
+<h3>Admin Dashboard</h3>
+
+{# Top search bar (doctor, patient, department...) #}
+<form method="get" class="row g-2 mb-4">
+  <div class="col-md-8">
+    <input class="form-control"
+           type="text"
+           name="q"
+           placeholder="doctor, patient, department..."
+           value="{{ q }}">
+  </div>
+  <div class="col-md-2">
+    <button class="btn btn-primary w-100">Search</button>
+  </div>
+</form>
+
+<div class="row">
+  <!-- Registered Doctors -->
+  <div class="col-md-6 mb-4">
+    <h5>Registered Doctors</h5>
+    <ul class="list-group">
+      {% for d in doctors %}
+        {# build strings for simple search match #}
+        {% set doc_name = (d.user.username if d.user else '')|lower %}
+        {% set dept_name = (d.department.name if d.department else '')|lower %}
+        {% set spec = (d.specialization or '')|lower %}
+
+        {% if not q_lower
+              or q_lower in doc_name
+              or q_lower in dept_name
+              or q_lower in spec %}
+
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              Dr. {{ d.user.username if d.user else 'Unknown' }}
+              <div class="small text-muted">
+                {{ d.specialization or 'No specialization' }}
+                {% if d.department %}
+                  · Dept: {{ d.department.name }}
+                {% endif %}
+              </div>
+            </div>
+            <div class="d-flex gap-2">
+              <a class="btn btn-sm btn-warning"
+                 href="{{ url_for('admin.edit_doctor', doctor_id=d.id) }}">Edit</a>
+            
+              <!-- NEW: working manage appointments button -->
+              <a class="btn btn-sm btn-outline-primary"
+                 href="{{ url_for('admin.manage_doctor_appointments', doctor_id=d.id) }}">
+                Manage Appointments
+              </a>
+            
+              <form method="post"
+                    action="{{ url_for('admin.delete_doctor', doctor_id=d.id) }}"
+                    onsubmit="return confirm('Delete this doctor?');">
+                <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+              </form>
+            </div>
+            
+          </li>
+        {% endif %}
+      {% else %}
+        <li class="list-group-item">No doctors registered.</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Registered Patients -->
+  <div class="col-md-6 mb-4">
+    <h5>Registered Patients</h5>
+    <ul class="list-group">
+      {% for u in users if u.role == 'patient' %}
+        {% set name = (u.username or '')|lower %}
+        {% set mail = (u.email or '')|lower %}
+
+        {% if not q_lower or q_lower in name or q_lower in mail %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              {{ u.username }}
+              <div class="small text-muted">{{ u.email }}</div>
+            </div>
+
+            <div class="d-flex gap-2">
+              {# EDIT PATIENT #}
+              <a class="btn btn-sm btn-outline-warning"
+                 href="{{ url_for('admin.edit_patient', user_id=u.id) }}">
+                Edit
+              </a>
+
+              {# DELETE PATIENT #}
+              <form method="post"
+                    action="{{ url_for('admin.delete_patient', user_id=u.id) }}"
+                    onsubmit="return confirm('Delete this patient and related records?');">
+                <button class="btn btn-sm btn-outline-danger" type="submit">
+                  Delete
+                </button>
+              </form>
+            </div>
+          </li>
+        {% endif %}
+      {% else %}
+        <li class="list-group-item">No patients registered.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+<hr>
+
+<div class="row">
+  <!-- Departments + Add Department -->
+  <div class="col-md-6 mb-4">
+    <h5>Departments</h5>
+    <ul class="list-group mb-3">
+      {% for d in departments %}
+        {# department name also participates in search #}
+        {% set dname = (d.name or '')|lower %}
+        {% if not q_lower or q_lower in dname %}
+          <li class="list-group-item">{{ d.name }}</li>
+        {% endif %}
+      {% else %}
+        <li class="list-group-item">No departments added yet.</li>
+      {% endfor %}
+    </ul>
+    <form method="post" action="{{ url_for('admin.add_department') }}">
+      <div class="mb-2">
+        <input class="form-control" name="name" placeholder="New department name" required>
+      </div>
+      <button class="btn btn-primary btn-sm">Add Department</button>
+    </form>
+  </div>
+
+  <!-- Add Doctor form (Admin create) -->
+  <div class="col-md-6 mb-4">
+    <h5>Add Doctor (Admin)</h5>
+    <form method="post" action="{{ url_for('admin.add_doctor') }}">
+      <div class="mb-2">
+        <input class="form-control" name="username" placeholder="Doctor username" required>
+      </div>
+      <div class="mb-2">
+        <input class="form-control" name="email" placeholder="Doctor email" required>
+      </div>
+      <div class="mb-2">
+        <input class="form-control" name="password" placeholder="Temporary password" required>
+      </div>
+      <div class="mb-2">
+        <select class="form-select" name="department_id" required>
+          <option value="">-- choose department --</option>
+          {% for d in departments %}
+            <option value="{{ d.id }}">{{ d.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="mb-2">
+        <input class="form-control" name="specialization" placeholder="Specialization (optional)">
+      </div>
+      <div class="mb-2">
+        <input class="form-control" name="experience_years" placeholder="Experience years (optional)">
+      </div>
+      <button class="btn btn-success btn-sm">Create Doctor</button>
+    </form>
+  </div>
+</div>
+
+{# Optional Upcoming Appointments section if 'appointments' is provided in context #}
+{% if appointments is defined %}
+  <hr>
+  <h5>Upcoming Appointments</h5>
+  <div class="table-responsive">
+    <table class="table table-sm align-middle">
+      <thead>
+        <tr>
+          <th>Sr No.</th>
+          <th>Patient</th>
+          <th>Doctor</th>
+          <th>Department</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for a in appointments %}
+          <tr>
+            <td>{{ a.id }}</td>
+            <td>{{ a.patient.user.username if a.patient and a.patient.user else '—' }}</td>
+            <td>{{ a.doctor.user.username if a.doctor and a.doctor.user else '—' }}</td>
+            <td>{{ a.department.name if a.department else '—' }}</td>
+            <td>{{ a.date }}</td>
+            <td>{{ a.start_time }} – {{ a.end_time }}</td>
+            <td>{{ a.status }}</td>
+          </tr>
+        {% else %}
+          <tr><td colspan="7" class="text-center">No upcoming appointments.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endif %}
+
+{% endblock %}

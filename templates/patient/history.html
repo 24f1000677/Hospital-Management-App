@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-10">
+    <h3>{{ patient.user.username if patient and patient.user else 'Patient' }} — Treatment History</h3>
+
+    {% if histories %}
+      <div class="list-group">
+        {% for h in histories %}
+          <div class="list-group-item mb-3">
+            <div class="d-flex justify-content-between">
+              <div>
+                <strong>Visit:</strong> {{ h.visit_type or '—' }}
+                <div class="small text-muted">
+                  {% if h.visit_date %}{{ h.visit_date }}{% else %}Entry #{{ h.id }}{% endif %}
+                </div>
+              </div>
+              <div class="text-end">
+                <span class="badge bg-secondary">
+                  {{ (h.diagnosis or '')|truncate(20) if h.diagnosis else 'No diagnosis' }}
+                </span>
+              </div>
+            </div>
+
+            <hr>
+
+            <div><strong>Tests:</strong> {{ h.tests_done or 'None' }}</div>
+
+            <div class="mt-2">
+              <strong>Diagnosis:</strong>
+              <div class="border p-2 mt-1">{{ h.diagnosis or '—' }}</div>
+            </div>
+
+            <div class="mt-2">
+              <strong>Prescription (summary):</strong>
+              <div class="border p-2 mt-1">{{ h.prescription or '—' }}</div>
+            </div>
+
+            <div class="mt-2">
+              <strong>Medicines / Dosage:</strong>
+              <div class="border p-2 mt-1">{{ h.medicines or '—' }}</div>
+            </div>
+
+            <div class="mt-2">
+              <strong>Notes:</strong>
+              <div class="border p-2 mt-1">{{ h.notes or '—' }}</div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="alert alert-secondary">No treatment history found.</div>
+    {% endif %}
+
+    <a class="btn btn-secondary mt-3" href="{{ url_for('patient.dashboard') }}">Back to Dashboard</a>
+  </div>
+</div>
+{% endblock %}

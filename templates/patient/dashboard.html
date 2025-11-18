@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Patient Dashboard</h3>
+
+<p>
+  <a class="btn btn-primary btn-sm" href="{{ url_for('patient.book') }}">Book Appointment</a>
+  <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('patient.history') }}">View Treatment History</a>
+</p>
+
+<h5>Upcoming Appointments</h5>
+<ul class="list-group">
+  {% for a in appointments %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <div>
+        Appointment #{{ a.id }} &nbsp; | &nbsp;
+        <strong>Status:</strong> {{ a.status }}
+        <div class="small text-muted">
+          Dr: {{ a.doctor.user.username if a.doctor and a.doctor.user else '—' }} |
+          Date: {{ a.date }} |
+          Time: {{ a.start_time }} - {{ a.end_time }}
+        </div>
+      </div>
+
+      <div>
+        {% if a.status != 'completed' %}
+          <a class="btn btn-sm btn-outline-primary"
+             href="{{ url_for('patient.reschedule_appointment', appt_id=a.id) }}">
+            Reschedule
+          </a>
+        {% endif %}
+        <!-- (optional) other action buttons like Cancel go here -->
+      </div>
+    </li>
+  {% else %}
+    <li class="list-group-item">No appointments</li>
+  {% endfor %}
+</ul>
+
+{% endblock %}

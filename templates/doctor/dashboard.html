@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Doctor Dashboard</h3>
+
+<p>
+  <a class="btn btn-sm btn-outline-primary"
+     href="{{ url_for('doctor.availability') }}">
+    Manage Availability
+  </a>
+</p>
+
+<h5>Appointments</h5>
+<ul class="list-group">
+  {% for a in appointments %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <div>
+        Appointment #{{ a.id }} &nbsp; | &nbsp;
+        <strong>Status:</strong> {{ a.status }}
+        <div class="small text-muted">
+          Date: {{ a.date }} |
+          Time: {{ a.start_time }} – {{ a.end_time }}
+          {% if a.patient %}
+            | Patient: {{ a.patient.user.username if a.patient.user else 'patient #' ~ a.patient.id }}
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="d-flex gap-2">
+        {# complete only if not yet done #}
+        {% if a.status != 'completed' %}
+          <a class="btn btn-sm btn-primary"
+             href="{{ url_for('doctor.complete_appointment', appt_id=a.id) }}">
+            Complete
+          </a>
+        {% endif %}
+
+        {# always allow doctor to open this patient's full history #}
+        {% if a.patient_id %}
+          <a class="btn btn-sm btn-outline-secondary"
+             href="{{ url_for('doctor.patient_history',
+                              patient_id=a.patient.id if a.patient else a.patient_id) }}">
+            Patient History
+          </a>
+        {% endif %}
+      </div>
+    </li>
+  {% else %}
+    <li class="list-group-item">No appointments</li>
+  {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <h4 class="card-title">Prescription / Visit summary</h4>
+        <p class="text-muted">Appointment #{{ appt.id }} — <strong>Status:</strong> {{ appt.status }}</p>
+
+        <div class="mb-3">
+          <h6>Patient</h6>
+          {% if patient and patient.user %}
+            <div>{{ patient.user.username }} (ID: {{ patient.id }})</div>
+          {% else %}
+            <div>Patient ID: {{ appt.patient_id }}</div>
+          {% endif %}
+        </div>
+
+        <div class="mb-3">
+          <h6>Visit Type</h6>
+          <div>{{ history.visit_type }}</div>
+        </div>
+
+        <div class="mb-3">
+          <h6>Tests Done</h6>
+          <div>{{ history.tests_done or '—' }}</div>
+        </div>
+
+        <div class="mb-3">
+          <h6>Diagnosis</h6>
+          <div>{{ history.diagnosis }}</div>
+        </div>
+
+        <div class="mb-3">
+          <h6>Prescription (summary)</h6>
+          <div>{{ history.prescription or '—' }}</div>
+        </div>
+
+        <div class="mb-3">
+          <h6>Medicines / Dosage</h6>
+          <div>{{ history.medicines or '—' }}</div>
+        </div>
+
+        <div class="mb-3">
+          <h6>Additional notes</h6>
+          <div>{{ history.notes or '—' }}</div>
+        </div>
+
+        <div class="d-flex gap-2">
+          <a class="btn btn-primary" href="{{ url_for('doctor.dashboard') }}">Close</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

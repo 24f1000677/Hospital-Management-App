@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-10">
+    <h3>Complete Appointment #{{ appt.id }}</h3>
+    <p class="text-muted">
+      Patient:
+      {{ patient.user.username if patient and patient.user else 'Unknown' }}
+      (ID: {{ patient.id if patient else '—' }})
+    </p>
+
+    <div class="row">
+      <!-- left: form -->
+      <div class="col-md-7">
+        <form method="post" novalidate>
+          <div class="mb-3">
+            <label class="form-label">Visit Type</label>
+            <input class="form-control" name="visit_type" placeholder="e.g. In-person, Teleconsult" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Tests Done</label>
+            <textarea class="form-control" name="tests_done" rows="2"
+                      placeholder="e.g. ECG, Bloodwork"></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Diagnosis</label>
+            <textarea class="form-control" name="diagnosis" rows="2" required></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Prescription (short summary)</label>
+            <textarea class="form-control" name="prescription" rows="2"
+                      placeholder="Short prescription summary"></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Medicines / Dosage</label>
+            <textarea class="form-control" name="medicines" rows="2"
+                      placeholder="e.g. PARA 1-0-1, DOLA 1-0-0"></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Notes</label>
+            <textarea class="form-control" name="notes" rows="2"
+                      placeholder="Additional notes / advice"></textarea>
+          </div>
+
+          <button class="btn btn-success">Save &amp; Mark Completed</button>
+          <a href="{{ url_for('doctor.dashboard') }}" class="btn btn-secondary ms-2">Cancel</a>
+        </form>
+      </div>
+
+      <!-- right: previous history -->
+      <div class="col-md-5">
+        <h5>Previous History</h5>
+        {% if histories %}
+          <div class="list-group small">
+            {% for h in histories %}
+              <div class="list-group-item mb-1">
+                <div class="fw-semibold">
+                  {{ h.visit_date.date() if h.visit_date else 'Unknown date' }}
+                  — {{ h.visit_type or 'Visit' }}
+                </div>
+                <div>Dx: {{ h.diagnosis or '—' }}</div>
+                <div class="text-muted">
+                  Rx: {{ h.prescription or '—' }}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+          <a class="btn btn-outline-secondary btn-sm mt-2"
+             href="{{ url_for('doctor.patient_history', patient_id=patient.id) }}">
+            Open full history
+          </a>
+        {% else %}
+          <p class="text-muted small">No previous history recorded for this patient.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

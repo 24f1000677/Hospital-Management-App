@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <h3>Edit Doctor</h3>
+
+    {% if get_flashed_messages() %}
+      <div class="alert alert-info">
+        {% for m in get_flashed_messages() %}<div>{{ m }}</div>{% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="post">
+      <div class="mb-3">
+        <label class="form-label">Username</label>
+        <input name="username" class="form-control" value="{{ user.username }}" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input name="email" type="email" class="form-control" value="{{ user.email }}" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Temporary Password (leave blank to keep current)</label>
+        <input name="password" type="password" class="form-control">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Department</label>
+        <select name="department_id" class="form-select" required>
+          <option value="">-- choose department --</option>
+          {% for d in departments %}
+            <option value="{{ d.id }}" {% if doc.department_id == d.id %}selected{% endif %}>{{ d.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Specialization</label>
+        <input name="specialization" class="form-control" value="{{ doc.specialization or '' }}">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Experience Years</label>
+        <input name="experience_years" type="number" class="form-control" value="{{ doc.experience_years or '' }}">
+      </div>
+
+      <button class="btn btn-success">Save</button>
+      <a class="btn btn-secondary" href="{{ url_for('admin.dashboard') }}">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

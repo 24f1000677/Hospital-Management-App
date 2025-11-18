@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>All Appointments</h3>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="alert alert-info">
+      {% for m in messages %}<div>{{ m }}</div>{% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Patient</th>
+      <th>Doctor</th>
+      <th>Department</th>
+      <th>Date</th>
+      <th>Time</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for a in appointments %}
+      <tr>
+        <td>{{ a.id }}</td>
+        <td>
+          {% set p = a.patient %}
+          {% if p and p.user %}{{ p.user.username }}{% else %}—{% endif %}
+        </td>
+        <td>
+          {% set d = a.doctor %}
+          {% if d and d.user %}{{ d.user.username }}{% else %}—{% endif %}
+        </td>
+        <td>{{ a.department.name if a.department else '—' }}</td>
+        <td>{{ a.date }}</td>
+        <td>{{ a.start_time }} - {{ a.end_time }}</td>
+        <td>{{ a.status }}</td>
+        <td>
+          <a class="btn btn-sm btn-outline-primary" href="{{ url_for('admin.edit_appointment', appt_id=a.id) }}">Edit</a>
+
+          <form method="post" action="{{ url_for('admin.delete_appointment', appt_id=a.id) }}" style="display:inline" onsubmit="return confirm('Delete this appointment?');">
+            <button class="btn btn-sm btn-outline-danger">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="8">No appointments found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<a class="btn btn-secondary" href="{{ url_for('admin.dashboard') }}">Back to Dashboard</a>
+{% endblock %}
+

@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Manage Appointments – Dr. {{ doctor.user.username if doctor.user else 'Unknown' }}</h3>
+
+<div class="mb-3 text-muted">
+  {% if doctor.specialization %}
+    Specialization: {{ doctor.specialization }}{% if doctor.department %} · Dept: {{ doctor.department.name }}{% endif %}
+  {% elif doctor.department %}
+    Department: {{ doctor.department.name }}
+  {% endif %}
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ 'danger' if category == 'danger' else category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="table-responsive">
+  <table class="table table-sm align-middle">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Patient</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Status</th>
+        <th style="width: 150px;">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for a in appointments %}
+        <tr>
+          <td>{{ a.id }}</td>
+          <td>{{ a.patient.user.username if a.patient and a.patient.user else '—' }}</td>
+          <td>{{ a.date }}</td>
+          <td>{{ a.start_time }} – {{ a.end_time }}</td>
+          <td>{{ a.status }}</td>
+          <td>
+            {% if a.status != 'cancelled' %}
+              <form method="post"
+                    action="{{ url_for('admin.admin_cancel_appointment', appt_id=a.id) }}"
+                    onsubmit="return confirm('Cancel this appointment?');">
+                <button type="submit" class="btn btn-sm btn-outline-danger">
+                  Cancel
+                </button>
+              </form>
+            {% else %}
+              <span class="badge text-bg-secondary">Cancelled</span>
+            {% endif %}
+          </td>
+        </tr>
+      {% else %}
+        <tr>
+          <td colspan="6" class="text-center">No appointments for this doctor.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary mt-3">
+  Back to Admin Dashboard
+</a>
+{% endblock %}

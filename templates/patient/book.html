@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Book Appointment</h3>
+{% if errors %}
+  <div class="alert alert-danger">
+    <ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul>
+  </div>
+{% endif %}
+<form method="post">
+  <div class="mb-2">
+    <label>Department</label>
+    <select name="department_id" id="department" class="form-select" required>
+      <option value="">-- choose --</option>
+      {% for d in departments %}
+        <option value="{{ d.id }}">{{ d.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="mb-2">
+    <label>Doctor</label>
+    <select name="doctor_id" id="doctor" class="form-select" required>
+      <option value="">-- choose department first --</option>
+    </select>
+  </div>
+  <div class="mb-2">
+    <label>Availability</label>
+    <select name="availability_id" id="availability" class="form-select" required>
+      <option value="">-- choose doctor first --</option>
+    </select>
+  </div>
+  <button class="btn btn-success">Book</button>
+</form>
+
+<script>
+document.getElementById('department').addEventListener('change', async function(){
+  const dep = this.value;
+  const docSel = document.getElementById('doctor');
+  docSel.innerHTML = '<option>Loading...</option>';
+  const res = await fetch('/api/departments/' + dep + '/doctors');
+  const data = await res.json();
+  docSel.innerHTML = '<option value="">-- choose --</option>';
+  data.forEach(d => {
+    const opt = document.createElement('option'); opt.value = d.id; opt.text = d.username || ('Doctor ' + d.id);
+    docSel.appendChild(opt);
+  });
+});
+
+document.getElementById('doctor').addEventListener('change', async function(){
+  const did = this.value;
+  const avail = document.getElementById('availability');
+  avail.innerHTML = '<option>Loading...</option>';
+  const res = await fetch('/api/doctors/' + did + '/availability');
+  const data = await res.json();
+  avail.innerHTML = '<option value="">-- choose --</option>';
+  data.forEach(a => {
+    const opt = document.createElement('option'); opt.value = a.id; opt.text = a.date + ' ' + (a.start_time || '');
+    avail.appendChild(opt);
+  });
+});
+</script>
+{% endblock %}
