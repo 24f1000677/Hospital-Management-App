@@ -34,12 +34,9 @@ Implements Admin, Doctor, and Patient workflows as per the official MAD-1 projec
 - [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
-- [Database Schema](#database-schema)
 - [API Resources](#api-resources)
 - [Installation & Setup](#installation--setup)
-- [Running the Application](#running-the-application)
 - [Demo Video](#demo-video)
-- [AI/LLM Usage Declaration](#aillm-usage-declaration)
 
 ---
 
@@ -183,3 +180,57 @@ The system strictly follows project requirements, wireframes, and validation rul
 | medicines | Text |
 | notes | Text |
 
+## API Resources
+
+Full API documentation is provided in:
+
+
+This follows the **OpenAPI 3.0** specification and includes definitions for:
+
+- Authentication  
+- Doctor management  
+- Availability  
+- Appointments  
+- Patient history  
+- Booking and rescheduling  
+
+---
+
+## Installation & Setup
+
+### 1. Clone the repository
+bash
+git clone https://github.com/24f1000677/Hospital-Management-App.git
+cd Hospital-Management-App
+
+### 2. Create a virtual environment
+bash
+python3 -m venv .venv
+source .venv/bin/activate
+
+### 3. Install dependencies
+pip install -r requirements.txt
+
+### 4. Run the application
+python run.py
+
+
+## Your app will be available at:
+
+http://127.0.0.1:5000
+
+
+## Demo Video
+
+# Drive Link:
+
+https://drive.google.com/file/d/1Lo52cd5Af4uxx-72dyhJjQBgrgD3FHq9/view?usp=sharing
+
+## Author
+
+**Name:** Yuvalakshmi M  
+**Roll Number:** 24f1000677  
+**Email:** 24f1000677@ds.study.iitm.ac.in  
+
+I am a student enrolled in the IITM BS Degree Program.  
+This project was developed as part of the MAD-1 (Application Development) course.
