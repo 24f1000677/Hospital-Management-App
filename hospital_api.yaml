@@ -1,0 +1,261 @@
+openapi: 3.0.0
+info:
+  title: Hospital Management System API
+  version: 1.0.0
+  description: API Specification for HMS Project (Admin, Doctor, Patient)
+
+servers:
+  - url: http://127.0.0.1:5000
+
+paths:
+
+  ###############################
+  # AUTH ENDPOINTS
+  ###############################
+  /auth/login:
+    post:
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: Login success
+        "401":
+          description: Invalid credentials
+
+  /auth/logout:
+    get:
+      summary: Logout current user
+      responses:
+        "200":
+          description: Logged out
+
+  /auth/register:
+    post:
+      summary: Register new patient or doctor
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username: {type: string}
+                email: {type: string}
+                password: {type: string}
+                role: {type: string, enum: [patient, doctor]}
+                department_id: {type: integer}
+      responses:
+        "201":
+          description: User created
+
+  ###############################
+  # ADMIN ENDPOINTS
+  ###############################
+
+  /admin/departments/add:
+    post:
+      summary: Add a new department
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name: {type: string}
+                description: {type: string}
+      responses:
+        "201":
+          description: Department added
+
+  /admin/doctors/add:
+    post:
+      summary: Add a new doctor (admin only)
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username: {type: string}
+                email: {type: string}
+                password: {type: string}
+                specialization: {type: string}
+                experience_years: {type: string}
+                department_id: {type: integer}
+      responses:
+        "201":
+          description: Doctor created
+
+  /admin/doctors/{doctor_id}/delete:
+    post:
+      summary: Delete a doctor (admin only)
+      parameters:
+        - in: path
+          name: doctor_id
+          required: true
+          schema: {type: integer}
+      responses:
+        "200":
+          description: Doctor deleted
+
+  /admin/doctors/{doctor_id}/edit:
+    post:
+      summary: Edit doctor details
+      parameters:
+        - in: path
+          name: doctor_id
+          required: true
+          schema: {type: integer}
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                specialization:
+                  type: string
+                experience_years:
+                  type: integer
+      responses:
+        "200":
+          description: Updated doctor data
+
+  ###############################
+  # DOCTOR ENDPOINTS
+  ###############################
+
+  /doctor/availability:
+    post:
+      summary: Add availability slot
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                date: {type: string}
+                start_time: {type: string}
+                end_time: {type: string}
+      responses:
+        "201":
+          description: Availability created
+
+    get:
+      summary: List all availability slots
+      responses:
+        "200":
+          description: OK
+
+  /doctor/appointments/{appt_id}/complete:
+    post:
+      summary: Complete appointment & add treatment details
+      parameters:
+        - in: path
+          name: appt_id
+          required: true
+          schema: {type: integer}
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                visit_type: {type: string}
+                tests_done: {type: string}
+                diagnosis: {type: string}
+                prescription: {type: string}
+                medicines: {type: string}
+                notes: {type: string}
+      responses:
+        "201":
+          description: Appointment completed
+
+  /doctor/patients/{patient_id}/history:
+    get:
+      summary: Get medical history for a patient
+      parameters:
+        - in: path
+          name: patient_id
+          required: true
+          schema: {type: integer}
+      responses:
+        "200":
+          description: History returned
+
+  ###############################
+  # PATIENT ENDPOINTS
+  ###############################
+  /patient/book:
+    post:
+      summary: Book appointment for selected doctor slot
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                department_id: {type: integer}
+                doctor_id: {type: integer}
+                availability_id: {type: integer}
+      responses:
+        "201":
+          description: Appointment booked
+
+  /patient/appointments/{appt_id}/reschedule:
+    post:
+      summary: Reschedule an appointment using available doctor slots
+      parameters:
+        - in: path
+          name: appt_id
+          required: true
+          schema: {type: integer}
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                new_availability_id: {type: integer}
+      responses:
+        "200":
+          description: Appointment rescheduled
+
+  /patient/appointments/{appt_id}/cancel:
+    post:
+      summary: Cancel an appointment
+      parameters:
+        - in: path
+          name: appt_id
+          required: true
+          schema: {type: integer}
+      responses:
+        "200":
+          description: Appointment cancelled
+
+  /patient/history:
+    get:
+      summary: View patient treatment history
+      responses:
+        "200":
+          description: History returned
