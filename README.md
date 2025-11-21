@@ -216,14 +216,14 @@ pip install -r requirements.txt
 python run.py
 
 ```
-## Your app will be available at:
+## App will be available at:
 
 http://127.0.0.1:5000
 
 
-## Demo Video
+# Demo Video
 
-# Drive Link:
+## Drive Link:
 
 https://drive.google.com/file/d/1Lo52cd5Af4uxx-72dyhJjQBgrgD3FHq9/view?usp=sharing
 
